@@ -13,6 +13,7 @@ export interface ParsedItemExpr {
   count?: number
 };
 
+// TODO: Base interface
 export interface ItemDefinitionEvidence {
   kind: 'item_definition',
 

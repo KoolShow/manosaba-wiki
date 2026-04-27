@@ -1,25 +1,11 @@
 import { readFile } from 'node:fs/promises';
-import path from 'node:path';
 import { commandMatch } from './commands';
 import { scanItemDefinitionFunctions } from './files';
 import { parseItemExpression, parseTopLevelComponents } from './parser';
 import { extractKnownFields } from './fields';
 import { normalizer } from '../../utils/mcfunction';
+import { inferNamespace, inferSourceStem, inferSourceDir } from '../../utils/fs';
 import type { ItemDefinitionEvidence } from './types';
-
-const inferNamespace = (filePath: string) => {
-  const parts = filePath.split(path.sep);
-  const dataIndex = parts.lastIndexOf('data');
-  return dataIndex !== -1 ? parts[dataIndex + 1] : 'unknown';
-};
-
-const inferSourceStem = (filePath: string) => {
-  return path.parse(filePath).name;
-};
-
-const inferSourceDir = (filePath: string) => {
-  return path.parse(filePath).dir.replace(DATAPACK_ROOT, '');
-};
 
 export const extractItemDefinitionsFromFile = async (
   filePath: string
