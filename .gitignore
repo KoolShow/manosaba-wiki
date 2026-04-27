@@ -1,0 +1,7 @@
+
+world/
+
+/**/node_modules/
+/**/dist/
+
+.env
