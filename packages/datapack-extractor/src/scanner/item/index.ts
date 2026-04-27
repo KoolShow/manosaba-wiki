@@ -1,10 +1,11 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { commandMatch } from './commands';
-import { scanItemFunctions } from './files';
+import { scanItemDefinitionFunctions } from './files';
 import { parseItemExpression, parseTopLevelComponents } from './parser';
 import { extractKnownFields } from './fields';
 import { normalizer } from '../../utils/mcfunction';
+import type { ItemDefinitionEvidence } from './types';
 
 const inferNamespace = (filePath: string) => {
   const parts = filePath.split(path.sep);
@@ -12,10 +13,20 @@ const inferNamespace = (filePath: string) => {
   return dataIndex !== -1 ? parts[dataIndex + 1] : 'unknown';
 };
 
-export const extractItemFromFile = async (filePath: string) => {
+const inferSourceStem = (filePath: string) => {
+  return path.parse(filePath).name;
+};
+
+const inferSourceDir = (filePath: string) => {
+  return path.parse(filePath).dir.replace(DATAPACK_ROOT, '');
+};
+
+export const extractItemDefinitionsFromFile = async (
+  filePath: string
+): Promise<ItemDefinitionEvidence[]> => {
   const content = await readFile(filePath, { encoding: 'utf8' });
   const lines = normalizer(content);
-  const items = []; // TODO: Types
+  const evidences: ItemDefinitionEvidence[] = [];
 
   for (const line of lines) {
     const match = commandMatch(line);
@@ -30,8 +41,13 @@ export const extractItemFromFile = async (filePath: string) => {
 
       const known = extractKnownFields(rawComponents);
 
-      items.push({
+      evidences.push({
+        kind: 'item_definition',
+        definitionSourceType: 'mcfunction',
+
         sourcePath: filePath,
+        sourceStem: inferSourceStem(filePath),
+        sourceDir: inferSourceDir(filePath),
         namespace: inferNamespace(filePath),
         commandType: match.type,
         slot: match.slot,
@@ -42,26 +58,30 @@ export const extractItemFromFile = async (filePath: string) => {
         ...known,
       });
     } catch (error) {
-      items.push({
+      evidences.push({
+        kind: 'item_definition',
+        definitionSourceType: 'mcfunction',
+
         sourcePath: filePath,
+        sourceStem: inferSourceStem(filePath),
+        sourceDir: inferSourceDir(filePath),
         namespace: inferNamespace(filePath),
         commandType: match.type,
         slot: match.slot,
-        baseItemId: 'unknown',
         warnings: [ error instanceof Error ? error.message : String(error) ],
       });
     }
   }
 
-  return items;
+  return evidences;
 };
 
-export const scanItems = async () => {
-  const fileList = await scanItemFunctions();
-  const result = []; // TODO: Types
+export const scanItemDefinitions = async (): Promise<ItemDefinitionEvidence[]> => {
+  const fileList = await scanItemDefinitionFunctions();
+  const result: ItemDefinitionEvidence[] = [];
 
   for (const filePath of fileList) {
-    result.push(...(await extractItemFromFile(filePath)));
+    result.push(...(await extractItemDefinitionsFromFile(filePath)));
   }
 
   return result;
