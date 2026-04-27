@@ -21,6 +21,8 @@ export interface LinkedItemCandidate {
 export interface LinkResult {
   linkedItems: LinkedItemCandidate[],
   unlinkedDefinitions: ItemDefinitionEvidence[],
+  templateDefinitions: ItemDefinitionEvidence[],
+  parametricDefinitions: ItemDefinitionEvidence[],
   unlinkedTriggers: ItemTriggerEvidence[],
   nonItemTriggers: ItemTriggerEvidence[],
   warnings: string[],

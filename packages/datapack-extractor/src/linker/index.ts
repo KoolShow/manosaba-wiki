@@ -33,6 +33,38 @@ const hasAnyIdentity = (fingerprint: ItemFingerprint): boolean => {
   );
 };
 
+const hasTemplateMarker = (value?: string): boolean => {
+  return typeof value === 'string' && value.includes('$(');
+};
+
+const hasStableIdentityPrefix = (value?: string): boolean => {
+  return typeof value === 'string' && /[A-Za-z0-9_:-]\$\(/.test(value);
+};
+
+const hasStableCustomDataKey = (value?: string): boolean => {
+  return typeof value === 'string' && /\{\s*[A-Za-z0-9_:-]+\s*:\s*\$\(/.test(value);
+};
+
+const isParametricDefinition = (definition: ItemDefinitionEvidence): boolean => {
+  if (!isTemplateDefinition(definition)) {
+    return false;
+  }
+
+  return Boolean(
+    hasStableIdentityPrefix(definition.itemModel) ||
+    hasStableCustomDataKey(definition.customDataRaw) ||
+    (definition.customNameRaw && !hasTemplateMarker(definition.customNameRaw))
+  );
+};
+
+const isTemplateDefinition = (definition: ItemDefinitionEvidence): boolean => {
+  return Boolean(
+    hasTemplateMarker(definition.itemModel) ||
+    hasTemplateMarker(definition.customNameRaw) ||
+    hasTemplateMarker(definition.customDataRaw)
+  );
+};
+
 const matchDefinitionFingerprints = (
   left: ItemFingerprint,
   right: ItemFingerprint
@@ -215,7 +247,10 @@ export const linkItemEvidence = (
   definitions: ItemDefinitionEvidence[],
   triggers: ItemTriggerEvidence[]
 ): LinkResult => {
-  const candidates = createDefinitionCandidates(definitions);
+  const parametricDefinitions = definitions.filter(isParametricDefinition);
+  const templateDefinitions = definitions.filter(definition => isTemplateDefinition(definition) && !isParametricDefinition(definition));
+  const linkableDefinitions = definitions.filter(definition => !isTemplateDefinition(definition));
+  const candidates = createDefinitionCandidates(linkableDefinitions);
 
   const unlinkedTriggers: ItemTriggerEvidence[] = [];
   const nonItemTriggers: ItemTriggerEvidence[] = [];
@@ -265,6 +300,8 @@ export const linkItemEvidence = (
   return {
     linkedItems,
     unlinkedDefinitions,
+    templateDefinitions,
+    parametricDefinitions,
     unlinkedTriggers,
     nonItemTriggers,
     warnings,
