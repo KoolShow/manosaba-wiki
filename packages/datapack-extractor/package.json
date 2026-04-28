@@ -8,7 +8,8 @@
     "rollup-plugin-node-externals": "^9.0.1",
     "typescript": "^6.0.2",
     "vite": "^8.0.10",
-    "vite-node": "^6.0.0"
+    "vite-node": "^6.0.0",
+    "@manosaba/types": "workspace:*"
   },
   "dependencies": {
     "deepslate": "^0.25.1",

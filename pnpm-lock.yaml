@@ -18,6 +18,9 @@ importers:
         specifier: ^0.2.16
         version: 0.2.16
     devDependencies:
+      '@manosaba/types':
+        specifier: workspace:*
+        version: link:../types
       '@types/node':
         specifier: ^24.12.2
         version: 24.12.2
@@ -33,6 +36,8 @@ importers:
       vite-node:
         specifier: ^6.0.0
         version: 6.0.0(@types/node@24.12.2)
+
+  packages/types: {}
 
   packages/wiki:
     dependencies:

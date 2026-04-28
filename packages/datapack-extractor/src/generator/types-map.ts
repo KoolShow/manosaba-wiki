@@ -1,4 +1,4 @@
-import type { ItemType } from './types';
+import type { ItemType } from '@manosaba/types';
 
 const TYPE_MAP: Record<string, ItemType> = {
   weapon: 'weapon',

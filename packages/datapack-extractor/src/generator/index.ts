@@ -1,12 +1,21 @@
+import { buildIdentity } from './identity';
+import {
+  buildPrimaryCanonicalKey,
+  buildPrimaryDescription,
+  buildPrimaryDescriptionRich,
+  buildPrimaryName,
+  buildPrimaryTextureKey,
+  getPrimaryRawTypes,
+  toSlug
+} from './helpers';
+import { mapItemTypes } from './types-map';
+import { buildVariantGroup } from './variants';
+import { buildLocationSourcesForCandidate } from '../location/sources';
+import type { Item } from '@manosaba/types';
+import type { GenerateItemsResult } from './types';
+import type { SupplyLocationSnapshot } from '../location/types';
 import type { LinkResult, LinkedItemCandidate } from '../linker/types';
 import type { VariantAnalysisResult } from '../variants/types';
-import { buildIdentity } from './identity';
-import { buildPrimaryCanonicalKey, buildPrimaryDescription, buildPrimaryDescriptionRich, buildPrimaryName, buildPrimaryTextureKey, getPrimaryRawTypes, toSlug } from './helpers';
-import { mapItemTypes } from './types-map';
-import type { Item, GenerateItemsResult } from './types';
-import { buildVariantGroup } from './variants';
-import type { SupplyLocationSnapshot } from '../location/types';
-import { buildLocationSourcesForCandidate } from '../location/sources';
 
 const getVariantAnalysisMap = (result: VariantAnalysisResult) => {
   return new Map(result.analyses.map(analysis => [analysis.sourceCandidateId, analysis]));

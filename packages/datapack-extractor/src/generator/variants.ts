@@ -1,7 +1,7 @@
+import { buildDefinitionDescription, buildDefinitionDescriptionRich, getVariantAxis, getVariantName, toSlug } from './helpers';
+import type { ItemVariant, ItemVariantGroup } from '@manosaba/types';
 import type { LinkedItemCandidate } from '../linker/types';
 import type { VariantAnalysis, VariantDescriptor } from '../variants/types';
-import type { ItemVariant, ItemVariantGroup } from './types';
-import { buildDefinitionDescription, buildDefinitionDescriptionRich, getVariantAxis, getVariantName, toSlug } from './helpers';
 
 const getVariantDefinition = (
   descriptor: VariantDescriptor,

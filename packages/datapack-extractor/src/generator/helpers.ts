@@ -4,7 +4,7 @@ import type { VariantAnalysis, VariantDescriptor } from '../variants/types';
 import type { ItemDefinitionEvidence } from '../scanner/item/types';
 import { getLoreDescription, getLoreTypeCandidates, parseLoreLines } from './lore';
 import { buildRichTextFromLore } from './rich-text';
-import type { RichTextDocument } from './types';
+import type { RichTextDocument } from '@manosaba/types';
 
 export const compact = <T>(values: Array<T | undefined>): T[] => {
   return values.filter((value): value is T => value !== undefined);

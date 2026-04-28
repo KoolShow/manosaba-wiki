@@ -1,6 +1,6 @@
 import { normalizeCustomData, normalizeCustomName } from '../linker/normalizer';
 import type { LinkedItemCandidate } from '../linker/types';
-import type { ItemIdentity } from './types';
+import type { ItemIdentity } from '@manosaba/types';
 
 export const buildIdentity = (candidate: LinkedItemCandidate): ItemIdentity | undefined => {
   const definition = candidate.definitions[0];

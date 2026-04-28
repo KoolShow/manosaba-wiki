@@ -1,6 +1,6 @@
 import { normalizeBaseItemId, normalizeCustomData, normalizeCustomName } from '../linker/normalizer';
+import type { ItemSource, LocationSource } from '@manosaba/types';
 import type { LinkedItemCandidate } from '../linker/types';
-import type { ItemSource, LocationSource } from '../generator/types';
 import type { ContainerItemStack, SupplyLocationSnapshot } from './types';
 
 const getStackItemModel = (stack: ContainerItemStack): string | undefined => {

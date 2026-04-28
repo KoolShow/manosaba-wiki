@@ -1,6 +1,6 @@
 import { parseSnbtLike } from '../utils/snbt';
 import { splitTopLevelLoreEntries } from './lore';
-import type { RichTextBlock, RichTextDocument, RichTextMarks, RichTextSpan } from './types';
+import type { RichTextBlock, RichTextDocument, RichTextMarks, RichTextSpan } from '@manosaba/types';
 
 const isEmptyTextNode = (value: unknown): boolean => {
   return typeof value === 'string'
