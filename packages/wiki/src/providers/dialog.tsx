@@ -6,10 +6,15 @@ export const dialogBus = new EventTarget();
 export const DialogProvider = () => {
   const [ dialog, setDialog ] = useState(null);
 
-  useEffect(() => {
-    const openHandler = (e) => setDialog(e.detail);
-    const closeHandler = () => setDialog(null);
+  const openHandler = (e) => {
+    setDialog(e.detail);
+  };
 
+  const closeHandler = () => {
+    setDialog(null);
+  };
+
+  useEffect(() => {
     dialogBus.addEventListener('open', openHandler);
     dialogBus.addEventListener('close', closeHandler);
 
@@ -19,12 +24,14 @@ export const DialogProvider = () => {
     }
   }, []);
 
-  if (!dialog) return null;
-
   return createPortal(
-    <div class="dialog-backdrop">
-      <div class="dialog">{dialog}</div>
-    </div>,
+    <>
+      <div
+        class={`dialog-backdrop bg-gray-800/50 transition-opacity duration-500 ease-out ${dialog ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        onClick={closeHandler}
+      />
+      <div class={`dialog bg-gray-800 text-gray-100 ${dialog ? 'open' : 'closed'}`}>{dialog}</div>
+    </>,
     document.body
   );
 };
