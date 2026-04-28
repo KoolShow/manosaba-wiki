@@ -15,6 +15,13 @@ const normalizeIngredient = (ingredient?: { itemId?: string; tagId?: string }) =
   };
 };
 
+const normalizeRecipeKind = (recipeType: RecipeEvidence['recipeType']): Recipe['kind'] => {
+  if (recipeType === 'minecraft:crafting_shaped' || recipeType === 'crafting_shaped') return 'crafting_shaped';
+  if (recipeType === 'minecraft:crafting_shapeless' || recipeType === 'crafting_shapeless') return 'crafting_shapeless';
+  if (recipeType === 'crafting_transmute') return 'crafting_transmute';
+  return 'campfire_cooking';
+};
+
 const buildIngredientItemId = (
   ingredient: { baseItemId?: string; itemId?: string; tagId?: string } | undefined,
   candidates: LinkedItemCandidate[],
@@ -78,7 +85,7 @@ export const generateRecipes = (
 ): Recipe[] => {
   return recipes.map((recipe) => ({
     id: recipe.id,
-    kind: recipe.recipeType === 'minecraft:crafting_shaped' ? 'crafting_shaped' : 'crafting_shapeless',
+    kind: normalizeRecipeKind(recipe.recipeType),
     pattern: recipe.pattern,
     key: recipe.key
       ? Object.fromEntries(
@@ -90,6 +97,9 @@ export const generateRecipes = (
     ingredients: recipe.ingredients
       ?.map(ingredient => normalizeIngredient(ingredient))
       .filter((entry): entry is NonNullable<ReturnType<typeof normalizeIngredient>> => Boolean(entry)),
+    input: normalizeIngredient(recipe.input),
+    material: normalizeIngredient(recipe.material),
+    ingredient: normalizeIngredient(recipe.ingredient),
     result: {
       baseItemId: normalizeBaseItemId(recipe.resultBaseItemId),
       itemModel: recipe.resultItemModel,
@@ -123,6 +133,27 @@ export const generateRecipes = (
           ...ingredient,
           itemId: buildIngredientItemId(ingredient, candidates),
         }))
+      : undefined,
+    input: recipe.input
+      ? {
+          baseItemId: normalizeBaseItemId((recipe.input as { baseItemId?: string; itemId?: string }).baseItemId ?? recipe.input.itemId),
+          ...recipe.input,
+          itemId: buildIngredientItemId(recipe.input, candidates),
+        }
+      : undefined,
+    material: recipe.material
+      ? {
+          baseItemId: normalizeBaseItemId((recipe.material as { baseItemId?: string; itemId?: string }).baseItemId ?? recipe.material.itemId),
+          ...recipe.material,
+          itemId: buildIngredientItemId(recipe.material, candidates),
+        }
+      : undefined,
+    ingredient: recipe.ingredient
+      ? {
+          baseItemId: normalizeBaseItemId((recipe.ingredient as { baseItemId?: string; itemId?: string }).baseItemId ?? recipe.ingredient.itemId),
+          ...recipe.ingredient,
+          itemId: buildIngredientItemId(recipe.ingredient, candidates),
+        }
       : undefined,
   }));
 };

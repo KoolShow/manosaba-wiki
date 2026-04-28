@@ -74,19 +74,40 @@ const buildLocationSource = (
   };
 };
 
+const buildLocationSourceKey = (source: LocationSource): string => {
+  return [
+    source.name,
+    source.count ?? '',
+    source.implementation ?? '',
+    source.lootTableId ?? '',
+  ].join('|');
+};
+
 export const buildLocationSourcesForCandidate = (
   candidate: LinkedItemCandidate,
   supplies: SupplyLocationSnapshot[],
 ): ItemSource[] => {
-  const sources: ItemSource[] = [];
+  const aggregated = new Map<string, LocationSource>();
 
   for (const supply of supplies) {
     for (const item of supply.items) {
       if (matchesCandidate(candidate, item.stack)) {
-        sources.push(buildLocationSource(supply, item.stack, item.probability));
+        const source = buildLocationSource(supply, item.stack, item.probability);
+        const key = buildLocationSourceKey(source);
+        const existing = aggregated.get(key);
+
+        if (existing) {
+          aggregated.set(key, {
+            ...existing,
+            probability: (existing.probability ?? 0) + (source.probability ?? 0),
+          });
+          continue;
+        }
+
+        aggregated.set(key, source);
       }
     }
   }
 
-  return sources;
+  return Array.from(aggregated.values());
 };

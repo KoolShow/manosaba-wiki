@@ -21,9 +21,7 @@ export const ItemDialog = ({ item }: ItemDialogProps) => {
         />
       </div>
 
-      <div>
-        <MCRichText document={descriptionRich} />
-      </div>
+      <MCRichText document={descriptionRich} />
 
       {sources && sources.length > 0 && (
         <div class="pt-2">

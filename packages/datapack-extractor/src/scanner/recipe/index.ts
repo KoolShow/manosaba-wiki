@@ -8,6 +8,10 @@ import type { RecipeEvidence, RecipeIngredientEvidence, RecipeSourceType } from 
 const SUPPORTED_RECIPE_TYPES: RecipeSourceType[] = [
   'minecraft:crafting_shaped',
   'minecraft:crafting_shapeless',
+  'crafting_shaped',
+  'crafting_shapeless',
+  'crafting_transmute',
+  'campfire_cooking',
 ];
 
 const parseIngredient = (value: unknown): RecipeIngredientEvidence | undefined => {
@@ -96,7 +100,7 @@ export const parseRecipeFile = async (filePath: string): Promise<RecipeEvidence 
     resultCustomDataRaw: resultFields.resultCustomDataRaw,
   };
 
-  if (recipeType === 'minecraft:crafting_shaped') {
+  if (recipeType === 'minecraft:crafting_shaped' || recipeType === 'crafting_shaped') {
     evidence.pattern = Array.isArray(parsed.pattern)
       ? parsed.pattern.filter((entry): entry is string => typeof entry === 'string')
       : undefined;
@@ -111,12 +115,21 @@ export const parseRecipeFile = async (filePath: string): Promise<RecipeEvidence 
     }
   }
 
-  if (recipeType === 'minecraft:crafting_shapeless') {
+  if (recipeType === 'minecraft:crafting_shapeless' || recipeType === 'crafting_shapeless') {
     evidence.ingredients = Array.isArray(parsed.ingredients)
       ? parsed.ingredients
         .map(parseIngredient)
         .filter((entry): entry is RecipeIngredientEvidence => Boolean(entry))
       : undefined;
+  }
+
+  if (recipeType === 'crafting_transmute') {
+    evidence.input = parseIngredient(parsed.input);
+    evidence.material = parseIngredient(parsed.material);
+  }
+
+  if (recipeType === 'campfire_cooking') {
+    evidence.ingredient = parseIngredient(parsed.ingredient);
   }
 
   return evidence;

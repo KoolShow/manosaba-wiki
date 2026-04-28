@@ -1,4 +1,4 @@
-export type RecipeKind = 'crafting_shaped' | 'crafting_shapeless';
+export type RecipeKind = 'crafting_shaped' | 'crafting_shapeless' | 'crafting_transmute' | 'campfire_cooking';
 
 export interface RecipeIngredient {
   baseItemId?: string,
@@ -20,6 +20,9 @@ export interface Recipe {
   pattern?: string[],
   key?: Record<string, RecipeIngredient>,
   ingredients?: RecipeIngredient[],
+  input?: RecipeIngredient,
+  material?: RecipeIngredient,
+  ingredient?: RecipeIngredient,
   result: RecipeResultIdentity,
   linkedItemId?: string,
   warnings?: string[],

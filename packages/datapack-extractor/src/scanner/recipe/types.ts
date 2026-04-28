@@ -1,4 +1,10 @@
-export type RecipeSourceType = 'minecraft:crafting_shaped' | 'minecraft:crafting_shapeless';
+export type RecipeSourceType =
+  | 'minecraft:crafting_shaped'
+  | 'minecraft:crafting_shapeless'
+  | 'crafting_shaped'
+  | 'crafting_shapeless'
+  | 'crafting_transmute'
+  | 'campfire_cooking';
 
 export interface RecipeIngredientEvidence {
   baseItemId?: string,
@@ -16,6 +22,9 @@ export interface RecipeEvidence {
   pattern?: string[],
   key?: Record<string, RecipeIngredientEvidence>,
   ingredients?: RecipeIngredientEvidence[],
+  input?: RecipeIngredientEvidence,
+  material?: RecipeIngredientEvidence,
+  ingredient?: RecipeIngredientEvidence,
   resultBaseItemId?: string,
   resultCount?: number,
   resultItemModel?: string,
