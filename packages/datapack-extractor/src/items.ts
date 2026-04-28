@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { filterIngameItemDefinitions, filterIngameItemTriggers } from './filter/ingame';
 import { generateItems } from './generator/index';
 import { linkItemEvidence } from './linker/index';
 import { readSupplyLocations } from './location/supplies';
@@ -11,9 +12,12 @@ const OUTPUT_PATH = path.resolve(process.cwd(), 'dist/items.json');
 const WORLD_PATH = path.resolve(process.cwd(), '../..', 'world');
 
 const buildItems = async () => {
-  const definitions = await scanItemDefinitions();
-  const triggers = await scanItemTriggerEvidence();
+  const allDefinitions = await scanItemDefinitions();
+  const allTriggers = await scanItemTriggerEvidence();
   const supplyLocations = await readSupplyLocations(WORLD_PATH);
+
+  const definitions = filterIngameItemDefinitions(allDefinitions);
+  const triggers = filterIngameItemTriggers(allTriggers);
 
   const linkResult = linkItemEvidence(definitions, triggers);
   const variantResult = analyzeVariants(linkResult);

@@ -24,6 +24,68 @@ const safeJsonParse = (input: string): unknown | undefined => {
   }
 };
 
+const splitTopLevelSnbtEntries = (input: string): string[] => {
+  const content = input.slice(1, -1);
+  const entries: string[] = [];
+  let current = '';
+  let squareDepth = 0;
+  let braceDepth = 0;
+  let inString = false;
+  let escaped = false;
+
+  for (const char of content) {
+    current += char;
+
+    if (escaped) {
+      escaped = false;
+      continue;
+    }
+
+    if (char === '\\') {
+      escaped = true;
+      continue;
+    }
+
+    if (char === '"') {
+      inString = !inString;
+      continue;
+    }
+
+    if (inString) {
+      continue;
+    }
+
+    if (char === '[') squareDepth++;
+    if (char === ']') squareDepth--;
+    if (char === '{') braceDepth++;
+    if (char === '}') braceDepth--;
+
+    if (char === ',' && squareDepth === 0 && braceDepth === 0) {
+      entries.push(current.slice(0, -1).trim());
+      current = '';
+    }
+  }
+
+  const trimmed = current.trim();
+  if (trimmed) {
+    entries.push(trimmed);
+  }
+
+  return entries;
+};
+
+const parseArrayLike = (input: string): unknown[] | undefined => {
+  const trimmed = input.trim();
+  if (!trimmed.startsWith('[') || !trimmed.endsWith(']')) {
+    return undefined;
+  }
+
+  return splitTopLevelSnbtEntries(trimmed).map((entry) => {
+    const parsed = parseSnbtLike(entry);
+    return parsed ?? entry;
+  });
+};
+
 export const parseSnbtLike = (input: string): unknown | undefined => {
   const jsonValue = safeJsonParse(input);
   if (jsonValue !== undefined) {
@@ -33,7 +95,7 @@ export const parseSnbtLike = (input: string): unknown | undefined => {
   try {
     return NbtTag.fromString(input).toSimplifiedJson();
   } catch {
-    return undefined;
+    return parseArrayLike(input);
   }
 };
 

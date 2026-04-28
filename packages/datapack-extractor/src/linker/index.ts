@@ -45,6 +45,88 @@ const hasStableCustomDataKey = (value?: string): boolean => {
   return typeof value === 'string' && /\{\s*[A-Za-z0-9_:-]+\s*:\s*\$\(/.test(value);
 };
 
+const extractSingleStateAxis = (
+  customData?: string,
+): { key: string; value: string } | undefined => {
+  if (!customData) return undefined;
+
+  try {
+    const parsed = JSON.parse(customData) as Record<string, unknown>;
+    const entries = Object.entries(parsed);
+    if (entries.length !== 1) {
+      return undefined;
+    }
+
+    const [key, value] = entries[0];
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      return { key, value: String(value) };
+    }
+  } catch {
+    return undefined;
+  }
+
+  return undefined;
+};
+
+const areNamesCompatible = (
+  left?: string,
+  right?: string,
+): boolean => {
+  if (!left || !right) {
+    return true;
+  }
+
+  if (left === right || left.includes(right) || right.includes(left)) {
+    return true;
+  }
+
+  let prefixLength = 0;
+  while (
+    prefixLength < left.length &&
+    prefixLength < right.length &&
+    left[prefixLength] === right[prefixLength]
+  ) {
+    prefixLength++;
+  }
+
+  return prefixLength >= 4;
+};
+
+const matchSingleAxisStateVariant = (
+  left: ItemFingerprint,
+  right: ItemFingerprint,
+): LinkMatch | undefined => {
+  if (!left.itemModel || !right.itemModel || left.itemModel !== right.itemModel) {
+    return undefined;
+  }
+
+  if (!left.baseItemId || !right.baseItemId || left.baseItemId !== right.baseItemId) {
+    return undefined;
+  }
+
+  if (!areNamesCompatible(left.customNameNormalized, right.customNameNormalized)) {
+    return undefined;
+  }
+
+  const leftAxis = extractSingleStateAxis(left.customDataNormalized);
+  const rightAxis = extractSingleStateAxis(right.customDataNormalized);
+
+  if (!leftAxis || !rightAxis || leftAxis.key !== rightAxis.key) {
+    return undefined;
+  }
+
+  if (leftAxis.value === rightAxis.value) {
+    return undefined;
+  }
+
+  return {
+    matched: true,
+    strength: 'medium',
+    ruleName: 'itemModel+stateAxis',
+    reason: `Merged definitions by itemModel '${left.itemModel}' and state axis '${leftAxis.key}'`,
+  };
+};
+
 const isParametricDefinition = (definition: ItemDefinitionEvidence): boolean => {
   if (!isTemplateDefinition(definition)) {
     return false;
@@ -69,6 +151,11 @@ const matchDefinitionFingerprints = (
   left: ItemFingerprint,
   right: ItemFingerprint
 ): LinkMatch => {
+  const stateVariantMatch = matchSingleAxisStateVariant(left, right);
+  if (stateVariantMatch) {
+    return stateVariantMatch;
+  }
+
   if (left.itemModel && right.itemModel && left.itemModel === right.itemModel) {
     if (
       left.customDataNormalized &&

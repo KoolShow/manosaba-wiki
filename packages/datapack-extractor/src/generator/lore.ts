@@ -4,6 +4,7 @@ export const splitTopLevelLoreEntries = (input: string): string[] => {
   const content = input.slice(1, -1);
   const entries: string[] = [];
   let current = '';
+  let squareDepth = 0;
   let braceDepth = 0;
   let inString = false;
   let escaped = false;
@@ -30,9 +31,11 @@ export const splitTopLevelLoreEntries = (input: string): string[] => {
       continue;
     }
 
+    if (char === '[') squareDepth++;
+    if (char === ']') squareDepth--;
     if (char === '{') braceDepth++;
     if (char === '}') braceDepth--;
-    if (char === ',' && braceDepth === 0) {
+    if (char === ',' && squareDepth === 0 && braceDepth === 0) {
       entries.push(current.slice(0, -1).trim());
       current = '';
     }
