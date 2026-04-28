@@ -1,0 +1,16 @@
+{
+  "name": "@manosaba/types",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "files": [
+    "src"
+  ],
+  "types": "./src/index.d.ts",
+  "exports": {
+    "types": "./src/index.d.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.30.3"
+}
