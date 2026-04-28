@@ -10,7 +10,7 @@ export const ItemCard = ({ item }: ItemCardProps) => {
     <div class="p-4 border rounded-md item-list-card">
       <div class="pb-2">
         <div>
-          <div class="text-xl">{item.name}</div>
+          <div class="text-xl truncate">{item.name}</div>
         </div>
       </div>
 
