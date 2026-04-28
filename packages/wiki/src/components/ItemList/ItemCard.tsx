@@ -1,4 +1,7 @@
 import { MCRichText } from '../MCRichText/MCRichText';
+import { ItemCardHeader } from './ItemHeader';
+import { ItemDialog } from './ItemDialog';
+import * as dialog from '../../dialog';
 import type { Item } from '@manosaba/types';
 
 type ItemCardProps = {
@@ -6,27 +9,22 @@ type ItemCardProps = {
 };
 
 export const ItemCard = ({ item }: ItemCardProps) => {
+  const showDetailDialog = () => {
+    dialog.show(<ItemDialog item={item} />);
+  };
+
   return (
-    <div class="p-4 border rounded-md item-list-card">
+    <div class="p-4 border rounded-md item-list-card" onClick={showDetailDialog}>
       <div class="pb-2">
-        <div>
-          <div class="text-xl truncate">{item.name}</div>
-        </div>
+        <ItemCardHeader
+          name={item.name}
+          types={item.types}
+        />
       </div>
 
       <div>
         <MCRichText document={item.descriptionRich ?? null} />
       </div>
-
-      {item.types && (
-        <div class="pt-2">
-          <div class="text-gray-500">
-            {item.types.map((type) => (
-              <span>{type}</span>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
