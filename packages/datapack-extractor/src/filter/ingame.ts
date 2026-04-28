@@ -5,9 +5,11 @@ import type { ItemDefinitionEvidence } from '../scanner/item/types';
 
 const EXCLUDED_PATH_SEGMENTS = [
   `${path.sep}function${path.sep}lobby${path.sep}`,
+  `${path.sep}function${path.sep}minigames${path.sep}`,
   `${path.sep}function${path.sep}test${path.sep}`,
   `${path.sep}function${path.sep}tutorial${path.sep}`,
   `${path.sep}advancement${path.sep}lobby${path.sep}`,
+  `${path.sep}advancement${path.sep}minigames${path.sep}`,
   `${path.sep}advancement${path.sep}test${path.sep}`,
   `${path.sep}advancement${path.sep}tutorial${path.sep}`,
 ];
@@ -25,6 +27,7 @@ const EXCLUDED_PATH_TOKENS = [
 
 const EXCLUDED_SOURCE_SEGMENTS = [
   'lobby',
+  'minigames',
   'test',
   'tutorial',
 ];

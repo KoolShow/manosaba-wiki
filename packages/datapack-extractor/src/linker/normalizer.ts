@@ -29,10 +29,15 @@ export const normalizeCustomName = (value?: string): string | undefined => {
   const trimmed = value.trim();
   if (!trimmed) return undefined;
 
-  const normalized = normalizeTextComponentLike(trimmed);
-  if (normalized) {
-    return normalized;
+  const looksLikeStructuredComponent =
+    trimmed.startsWith('{') ||
+    trimmed.startsWith('[') ||
+    trimmed.startsWith('"');
+
+  if (looksLikeStructuredComponent) {
+    return normalizeTextComponentLike(trimmed);
   }
 
-  return trimmed;
+  const normalized = normalizeTextComponentLike(trimmed);
+  return normalized ?? trimmed;
 };

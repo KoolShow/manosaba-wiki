@@ -149,5 +149,5 @@ export const normalizeTextComponentLike = (input: string): string | undefined =>
     return text;
   }
 
-  return JSON.stringify(stableSortValue(parsed));
+  return undefined;
 };
