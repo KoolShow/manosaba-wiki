@@ -4,6 +4,7 @@ import { getSupplyPosZ, getSupplyRanges } from './parse';
 import { extractKnownFields, buildProbabilityMap } from './fields';
 import { containerFilter, inferLocationName } from './utils';
 import { readContainerAt } from '../../utils/region';
+import { inferSourceDir, inferSourceStem } from '../../utils/fs';
 import type { SupplyDefinitionEvidence } from './types';
 
 const SupplyPosX = 1029;
@@ -55,6 +56,13 @@ export const extractItemDefinitionsFromSupply = async (
 
     evidences.push({
       kind: 'supply_definition',
+
+      sourcePath: filePath,
+      sourceStem: inferSourceStem(filePath),
+      sourceDir: inferSourceDir(filePath),
+      namespace: 'supply',
+      slot: item.slot >= 0 ? `container.${item.slot}` : undefined,
+      layer: !isReplace ? 'template' : 'replacement',
 
       locationName: inferLocationName(filePath),
       slotRanges: ranges,

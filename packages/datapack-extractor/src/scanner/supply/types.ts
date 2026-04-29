@@ -9,6 +9,13 @@ export interface SupplyRandomRule {
 export interface SupplyDefinitionEvidence {
   kind: 'supply_definition',
 
+  sourcePath: string,
+  sourceStem: string,
+  sourceDir: string,
+  namespace: string,
+  slot?: string,
+  layer: 'template' | 'replacement',
+
   locationName: string,
   slotRanges?: SupplyRandomRule[],
   probability?: number,
