@@ -9,7 +9,7 @@ export interface ContainerItemStack {
   slot: number,
   id?: string,
   count?: number,
-  components?: unknown,
+  components?: Record<string, unknown>,
 }
 
 export interface ContainerSnapshot {
