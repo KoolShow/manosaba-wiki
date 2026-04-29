@@ -4,8 +4,7 @@ import { getSupplyPosZ, getSupplyRanges } from './parse';
 import { extractKnownFields } from './fields';
 import { containerFilter, inferLocationName } from './utils';
 import { readContainerAt } from '../../utils/region';
-import { inferSourceStem, inferSourceDir } from '../../utils/fs';
-import type { ItemDefinitionEvidence } from './types';
+import type { SupplyDefinitionEvidence } from './types';
 
 const SupplyPosX = 1029;
 const SupplyStoragePosY = 45;
@@ -28,7 +27,7 @@ const componentParser = (component?: Record<string, unknown>) => {
 export const extractItemDefinitionsFromSupply = async (
   filePath: string,
   isReplace: boolean = false,
-): Promise<ItemDefinitionEvidence[]> => {
+): Promise<SupplyDefinitionEvidence[]> => {
   const content = await readFile(filePath, { encoding: 'utf8' });
 
   const supplyRanges = getSupplyRanges(content);
@@ -48,22 +47,16 @@ export const extractItemDefinitionsFromSupply = async (
     )
   );
 
-  const evidences: ItemDefinitionEvidence[] = [];
+  const evidences: SupplyDefinitionEvidence[] = [];
 
   for (const item of containerItems) {
-    const rangeIndex = supplyRanges.findIndex(e => item.slot >= e.slotStart && item.slot <= e.slotEnd);
-    const range = rangeIndex !== -1 ? supplyRanges[rangeIndex] : null;
+    const ranges = supplyRanges.filter(e => item.slot >= e.slotStart && item.slot <= e.slotEnd);
 
     evidences.push({
-      kind: 'item_definition',
+      kind: 'supply_definition',
 
-      sourcePath: filePath,
-      sourceStem: inferSourceStem(filePath),
-      sourceDir: inferSourceDir(filePath),
-      namespace: inferLocationName(filePath),
-
-      definitionSourceType: 'supply',
-      slotRange: range ?? (void 0),
+      locationName: inferLocationName(filePath),
+      slotRanges: ranges,
 
       baseItemId: item.id,
       count: item.count,
@@ -79,8 +72,8 @@ export const extractItemDefinitionsFromSupply = async (
 
 export const scanItemDefinitions = async () => {
   const fileList = await scanSupplyDefinitionFiles();
-  const result: ItemDefinitionEvidence[] = [];
-  const resultReplace: ItemDefinitionEvidence[] = [];
+  const result: SupplyDefinitionEvidence[] = [];
+  const resultReplace: SupplyDefinitionEvidence[] = [];
 
   for (const filePath of fileList) {
     result.push(...(await extractItemDefinitionsFromSupply(filePath)));

@@ -6,29 +6,24 @@ export interface SupplyRandomRule {
   slotEnd: number,
 };
 
-export interface ItemDefinitionEvidence {
-  kind: 'item_definition',
+export interface SupplyDefinitionEvidence {
+  kind: 'supply_definition',
 
-  sourcePath: string,
-  sourceStem: string,
-  sourceDir: string,
-  namespace: string,
-
-  definitionSourceType: 'supply',
-  slotRange?: SupplyRandomRule,
+  locationName: string,
+  slotRanges?: SupplyRandomRule[],
 
   baseItemId?: string,
   count?: number,
   rawComponents?: Record<string, string>;
 
+  itemName?: string,
   itemModel?: string,
-  customNameRaw?: string,
-  loreRaw?: Array<unknown>,
-  customDataRaw?: object,
+  customName?: object,
+  lore?: Array<unknown>,
+  customData?: object,
   maxStackSize?: number,
   maxDamage?: number,
   damage?: number,
 
   warnings: string[],
 }
-
