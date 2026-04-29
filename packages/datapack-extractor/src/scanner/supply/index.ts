@@ -26,7 +26,8 @@ const componentParser = (component?: Record<string, unknown>) => {
 }
 
 export const extractItemDefinitionsFromSupply = async (
-  filePath: string
+  filePath: string,
+  isReplace: boolean = false,
 ): Promise<ItemDefinitionEvidence[]> => {
   const content = await readFile(filePath, { encoding: 'utf8' });
 
@@ -36,14 +37,20 @@ export const extractItemDefinitionsFromSupply = async (
   if (isNaN(supplyPosZ))
     throw new Error(`Cannot parse supply container Z coords in definition: ${filePath}`);
 
-  const allItems = [
-    ...containerFilter(await readContainerAt(WORLD_ROOT, { x: SupplyPosX, y: SupplyStoragePosY, z: supplyPosZ })), // Storage
-    ...containerFilter(await readContainerAt(WORLD_ROOT, { x: SupplyPosX, y: SupplyReplacePosY, z: supplyPosZ })) // Replacements
-  ];
+  const containerItems = containerFilter(
+    await readContainerAt(
+      WORLD_ROOT,
+      {
+        x: SupplyPosX,
+        y: !isReplace ? SupplyStoragePosY : SupplyReplacePosY,
+        z: supplyPosZ,
+      }
+    )
+  );
 
   const evidences: ItemDefinitionEvidence[] = [];
 
-  for (const item of allItems) {
+  for (const item of containerItems) {
     const rangeIndex = supplyRanges.findIndex(e => item.slot >= e.slotStart && item.slot <= e.slotEnd);
     const range = rangeIndex !== -1 ? supplyRanges[rangeIndex] : null;
 
@@ -70,12 +77,18 @@ export const extractItemDefinitionsFromSupply = async (
   return evidences;
 };
 
-export const scanItemDefinitions = async (): Promise<ItemDefinitionEvidence[]> => {
+export const scanItemDefinitions = async () => {
   const fileList = await scanSupplyDefinitionFiles();
   const result: ItemDefinitionEvidence[] = [];
+  const resultReplace: ItemDefinitionEvidence[] = [];
 
-  for (const filePath of fileList)
+  for (const filePath of fileList) {
     result.push(...(await extractItemDefinitionsFromSupply(filePath)));
+    resultReplace.push(...(await extractItemDefinitionsFromSupply(filePath, true)));
+  }
 
-  return result;
+  return {
+    template: result,
+    replacement: resultReplace,
+  };
 };
