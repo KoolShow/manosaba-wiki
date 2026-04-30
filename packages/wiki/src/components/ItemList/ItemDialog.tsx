@@ -32,8 +32,6 @@ export const ItemDialog = ({ item }: ItemDialogProps) => {
     if (_variant.descriptionRich) setDiscription(_variant.descriptionRich);
   };
 
-  console.log(item);
-
   return (
     <div class="p-4">
       <div class="pb-2">
@@ -75,12 +73,16 @@ export const ItemDialog = ({ item }: ItemDialogProps) => {
             .filter(e => e.type === 'location')
             .sort((a, b) => (b.probability ?? 1) - (a.probability ?? 1))
             .map((source) => (
-                <div>
-                  {Math.round((source.probability ?? 1) * 1000) / 10}%
-                  的概率可以从「{getLocationName(source.name)}」找到
+                <div class="text-gray-400">
+                  <span class="text-gray-200">{Math.round((source.probability ?? 1) * 1000) / 10}% </span>
+                  的概率可以从 <span class="text-gray-200">{getLocationName(source.name)}</span> 找到
                   {source.count && source.count > 1 && (
-                    <>{source.count}个</>
-                  )}，平均需要尝试 {Math.round((1 / (source.probability ?? 1)) * 10) / 10} 次
+                    <> <span class="text-gray-200">{source.count} 个</span></>
+                  )}
+                  <div class="ml-10 text-gray-400">
+                    平均需要尝试
+                    <span class="text-gray-200"> {Math.round((1 / (source.probability ?? 1)) * 10) / 10} 次</span>
+                  </div>
                 </div>
               )
             )
