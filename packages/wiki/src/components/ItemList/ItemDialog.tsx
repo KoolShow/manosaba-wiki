@@ -81,7 +81,7 @@ export const ItemDialog = ({ item }: ItemDialogProps) => {
                   )}
                   <div class="ml-10 text-gray-400">
                     平均需要尝试
-                    <span class="text-gray-200"> {Math.round((1 / (source.probability ?? 1)) * 10) / 10} 次</span>
+                    <span class="text-gray-200"> {Math.ceil(1 / (source.probability ?? 1))} 次</span>
                   </div>
                 </div>
               )

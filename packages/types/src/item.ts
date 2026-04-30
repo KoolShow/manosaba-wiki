@@ -6,7 +6,7 @@ export type ItemType =
   | 'food'
   | 'medicine'
   | 'tool'
-  | 'quest'
+  // | 'quest'
   | 'clue'
   | 'magic'
   | 'utility'

@@ -21,7 +21,7 @@ export const ItemTypeMap: Readonly<Record<ItemType, string>> = {
   food: '食物',
   medicine: '药品',
   tool: '工具',
-  quest: '任务',
+  // quest: '任务',
   clue: '线索',
   magic: '魔法',
   utility: '道具',
