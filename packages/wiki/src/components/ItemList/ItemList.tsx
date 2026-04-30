@@ -3,6 +3,7 @@ import { getItemType, getLocationName, ItemTypeMap, LocationMap } from '../../co
 import { useItemStore } from '../../store/item';
 import { ItemCard } from './ItemCard';
 import type { TargetedEvent } from 'preact';
+import type { ItemSource, LocationSource } from '@manosaba/types';
 import './style.css';
 
 export const ItemList = () => {
@@ -56,6 +57,27 @@ export const ItemList = () => {
         );
       })
   );
+
+  const getBestLocationSource = (sources?: ItemSource[]) => {
+    if (!sources || sources.length === 0) return undefined;
+
+    const locationSources = sources.filter((source): source is LocationSource => source.type === 'location');
+    if (locationSources.length === 0) return undefined;
+
+    const candidateSources = (
+      filterLocations.length > 0
+        ? locationSources.filter(source => filterLocations.includes(source.name))
+        : locationSources
+    );
+
+    if (candidateSources.length === 0) return undefined;
+
+    return candidateSources.reduce((best, current) => {
+      const bestProb = best.probability ?? 1;
+      const currentProb = current.probability ?? 1;
+      return currentProb > bestProb ? current : best;
+    });
+  };
 
   return (
     <>
@@ -125,7 +147,7 @@ export const ItemList = () => {
 
       <div class="item-list">
         {items.map((item) => (
-          <ItemCard item={item} key={item.id} />
+          <ItemCard item={item} source={getBestLocationSource(item.sources)} key={item.id} />
         ))}
       </div>
     </>
