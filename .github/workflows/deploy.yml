@@ -45,7 +45,7 @@ jobs:
 
     - name: Extract info from world
       working-directory: packages/datapack-extractor
-      run: npx vite-node ./src/item.ts
+      run: npx vite-node ./src/index.ts
 
     - name: Copy extracted info
       run: |
