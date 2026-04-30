@@ -1,6 +1,7 @@
 import { useState } from 'preact/hooks';
 import { ItemCardHeader } from './ItemHeader';
 import { MCRichText } from '../MCRichText/MCRichText';
+import { getLocationName } from '../../const';
 import type { Item, RichTextDocument } from '@manosaba/types';
 
 type ItemDialogProps = {
@@ -74,7 +75,7 @@ export const ItemDialog = ({ item }: ItemDialogProps) => {
             .map((source) => (
                 <div>
                   {Math.round((source.probability ?? 1) * 1000) / 10}%
-                  的概率可以从「{source.name}」找到
+                  的概率可以从「{getLocationName(source.name)}」找到
                   {source.count && source.count > 1 && (
                     <>{source.count}个</>
                   )}

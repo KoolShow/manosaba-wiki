@@ -3,12 +3,15 @@ import type { RichTextDocument } from './richtext';
 export type ItemType =
   | 'weapon'
   | 'consumable'
+  | 'food'
+  | 'medicine'
   | 'tool'
   | 'quest'
   | 'clue'
   | 'magic'
   | 'utility'
   | 'magical_utility'
+  | 'accessories'
   | 'unknown';
 
 export interface ItemIdentity {

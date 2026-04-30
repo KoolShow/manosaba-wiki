@@ -1,3 +1,4 @@
+import { getItemType } from '../../const';
 
 type ItemTagProps = {
   tags: string[],
@@ -11,7 +12,7 @@ export const ItemTag = ({
       {tags.map((tag) => (
         <span
           class="px-2 bg-gray-700 rounded-sm"
-        >{tag}</span>
+        >{getItemType(tag)}</span>
       ))}
     </div>
   )
