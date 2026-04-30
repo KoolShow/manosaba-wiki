@@ -80,7 +80,7 @@ export const ItemDialog = ({ item }: ItemDialogProps) => {
                   的概率可以从「{getLocationName(source.name)}」找到
                   {source.count && source.count > 1 && (
                     <>{source.count}个</>
-                  )}
+                  )}，平均需要尝试 {Math.round((1 / (source.probability ?? 1)) * 10) / 10} 次
                 </div>
               )
             )
