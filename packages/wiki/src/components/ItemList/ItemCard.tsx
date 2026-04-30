@@ -14,7 +14,23 @@ export const ItemCard = ({ item }: ItemCardProps) => {
   };
 
   return (
-    <div class="p-4 border rounded-md item-list-card" onClick={showDetailDialog}>
+    <div
+      class={[
+        'p-4',
+        'transition',
+        'transition-linear',
+        'duration-100',
+        'border',
+        'border-gray-600',
+        'hover:border-gray-500',
+        'rounded-md',
+        'bg-gray-800',
+        'hover:bg-gray-700',
+        'cursor-pointer',
+        'item-list-card',
+      ].join(' ')}
+      onClick={showDetailDialog}
+    >
       <div class="pb-2">
         <ItemCardHeader
           name={item.name}

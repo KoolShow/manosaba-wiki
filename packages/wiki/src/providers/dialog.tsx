@@ -27,10 +27,32 @@ export const DialogProvider = () => {
   return createPortal(
     <>
       <div
-        class={`dialog-backdrop bg-gray-800/50 transition-opacity duration-500 ease-out ${dialog ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        class={[
+          'dialog-backdrop',
+          'bg-gray-900/50',
+          'transition-opacity',
+          'duration-500',
+          'ease-out',
+          `${dialog ? 'opacity-100' : 'opacity-0'}`,
+          `${dialog ? 'pointer-events-auto' : 'pointer-events-none'}`,
+        ].join(' ')}
         onClick={closeHandler}
       />
-      <div class={`dialog bg-gray-800 text-gray-100 ${dialog ? 'open' : 'closed'}`}>{dialog}</div>
+      <div
+        class={[
+          'dialog',
+          'border',
+          'border-gray-700',
+          'rounded-md',
+          'bg-gray-900',
+          'text-gray-64',
+          'min-w-80',
+          'max-w-4xl',
+          `${dialog ? 'opacity-100' : 'opacity-0'}`,
+          `${dialog ? 'pointer-events-auto' : 'pointer-events-none'}`,
+          `${dialog ? 'open' : 'closed'}`
+        ].join(' ')}
+      >{dialog}</div>
     </>,
     document.body
   );

@@ -57,8 +57,8 @@ export const ItemDialog = ({ item }: ItemDialogProps) => {
             .sort((a, b) => (b.probability ?? 1) - (a.probability ?? 1))
             .map((source) => (
                 <div>
-                  有 {Math.round((source.probability ?? 1) * 1000) / 10}%
-                  的概率可以从{source.name}找到
+                  {Math.round((source.probability ?? 1) * 1000) / 10}%
+                  的概率可以从「{source.name}」找到
                   {source.count && source.count > 1 && (
                     <>{source.count}个</>
                   )}
