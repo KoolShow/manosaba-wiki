@@ -7,6 +7,7 @@ export const adaptRecipeResultToItemDefinition = (
   return {
     kind: 'item_definition',
     definitionSourceType: 'recipe',
+    recipeId: recipe.id,
     sourcePath: recipe.sourcePath,
     sourceStem: recipe.sourceStem,
     sourceDir: recipe.sourceDir,

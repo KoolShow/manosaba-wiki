@@ -28,6 +28,7 @@ export interface ItemDefinitionEvidence {
   layer?: 'template' | 'replacement',
   locationName?: string,
   probability?: number,
+  recipeId?: string,
 
   baseItemId?: string,
   count?: number,

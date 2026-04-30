@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { normalizeBaseItemId, normalizeCustomData, normalizeCustomName } from '../linker/normalizer';
+import { normalizeBaseItemId, normalizeCustomData } from '../linker/normalizer';
 import type { ItemTriggerEvidence } from '../scanner/advancement/types';
 import type { ItemDefinitionEvidence } from '../scanner/item/types';
 import { getDefinitionDisplayName } from '../scanner/item/name';
@@ -45,7 +45,6 @@ const SUPPLY_WEAK_IDENTITY_BASE_WHITELIST = new Set([
 const hasStrongDefinitionIdentity = (definition: ItemDefinitionEvidence): boolean => {
   return Boolean(
     definition.itemModel ||
-    normalizeCustomData(definition.customDataRaw) ||
     getDefinitionDisplayName(definition)
   );
 };
@@ -62,6 +61,10 @@ const shouldIncludeSupplyDefinition = (definition: ItemDefinitionEvidence): bool
 
   return SUPPLY_WEAK_IDENTITY_BASE_WHITELIST.has(baseItemId);
 };
+
+const shouldIncludeRecipeDefinition = (definition: ItemDefinitionEvidence): boolean => {
+  return hasStrongDefinitionIdentity(definition);
+}
 
 const hasExcludedPathSegment = (sourcePath: string): boolean => {
   return EXCLUDED_PATH_SEGMENTS.some(segment => sourcePath.includes(segment));
@@ -84,6 +87,10 @@ const shouldIncludeDefinition = (definition: ItemDefinitionEvidence): boolean =>
 
   if (definition.definitionSourceType === 'supply') {
     return shouldIncludeSupplyDefinition(definition);
+  }
+
+  if (definition.definitionSourceType === 'recipe') {
+    return shouldIncludeRecipeDefinition(definition);
   }
 
   if (hasExcludedPathSegment(definition.sourcePath)) {
